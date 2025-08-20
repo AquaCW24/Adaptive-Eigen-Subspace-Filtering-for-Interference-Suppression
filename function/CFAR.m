@@ -1,13 +1,13 @@
-function [INDEX, THRESHOLD] = CFAR(INPUT, TRAINING_CELL, GUARD_CELL, PFA, MODE, PLOT_BOOL)
+function [INDEX, THRESHOLD] = CFAR(INPUT, TRAINING_CELL, GUARD_CELL, PFA, METHOD, PLOT_BOOL)
 % CFAR implementation for target detection
-% Mode: "CA", "GOCA", "SOCA"
+% Method: "CA", "GOCA", "SOCA", "OS"
 % Input:
 % - INPUT: MxN "power" Matrix
 % - TRAINING_CELL: training cell, number of single side
 % - GUARD_CELL: guard cell, number of single side
 % - PFA: Probability of false alarm
-% - MODE: The metric of noise estimation ("CA", "GOCA", "SOCA")
-% - PLOT_BOOL: 
+% - METHOD: The metric of noise estimation ("CA", "GOCA", "SOCA", "OS")
+% - PLOT_BOOL: plot power and threshold or not
 % 
 % Outputs: 
 % INDEX: Indices of detected targets
@@ -41,14 +41,14 @@ for i = 1:N
     end
     
     % Calculate average cell noise power
-    if MODE == "CA" % Cell Average
+    if METHOD == "CA" % Cell Average
         noise_power = (sum(left_window) + sum(right_window)) / ...
                     (length(left_window) + length(right_window));
-    elseif MODE == "GOCA" % Greatest-of CFAR
+    elseif METHOD == "GOCA" % Greatest-of CFAR
         noise_power = max(mean(left_window), mean(right_window));
-    elseif MODE == "SOCA" % Smallest Of CFAR
+    elseif METHOD == "SOCA" % Smallest Of CFAR
         noise_power = min(mean(left_window), mean(right_window));
-    elseif MODE == "OS" % Order Statistic
+    elseif METHOD == "OS" % Order Statistic
         noise_power = sort([left_window, right_window]);
         noise_power = noise_power(floor(0.75*length([left_window, right_window])));
     end
@@ -63,17 +63,34 @@ INDEX = find(data > THRESHOLD | Std < threshold_std);
 
 if PLOT_BOOL == "true"
     % Plotting target
-    figure('Units','normalized','Position',[0 .1 .9 .4]);
-    plot(10*log10(data), 'k', 'LineWidth', 1);
+    figure('Units','normalized','Position',[0 .1 .9 .7]);
+    tt = tiledlayout(2,1);
+    nexttile;
+    plot((data), 'k', 'LineWidth', 1);
     hold on;
-    plot(10*log10(THRESHOLD), 'r', 'LineWidth', 1);
-    plot(INDEX, 10*log10(data(INDEX)), 'ro', 'MarkerSize', 6, 'LineWidth', 1.5);
+    plot((THRESHOLD), 'r', 'LineWidth', 1);
+    plot(find(data > THRESHOLD), (data(data > THRESHOLD)), 'ro', 'MarkerSize', 6, 'LineWidth', 1.5);
     grid on;box on;
-    title({MODE+'-CFAR Detection';sprintf('Training Cell: %d, Guard Cell: %d, P_{FA}: %.3f, P_{FA(actual)}:%.3f',TRAINING_CELL*2,GUARD_CELL,PFA,length(INDEX)/N)});
+    title('mean threshold');
     xlabel('Samples');
-    ylabel('Power (dB)');
+    ylabel('Mean Power');
     legend('Signal', 'Threshold', 'Detected Targets');
     xlim([1 N])
+
+    nexttile;
+    plot((Std), 'k', 'LineWidth', 1);
+    hold on;
+    yline((threshold_std), 'r', 'LineWidth', 1);
+    plot(find(Std < threshold_std), (Std(Std < threshold_std)), 'ro', 'MarkerSize', 6, 'LineWidth', 1.5);
+    grid on;box on;
+    title('standard deviation threshold');
+    xlabel('Samples');
+    ylabel('Standard Deviation (dB)');
+    legend('Signal', 'Threshold', 'Detected Targets');
+    xlim([1 N])
+    
+    % title(tt, {MODE+'-CFAR Detection';sprintf('Training Cell: %d, Guard Cell: %d, P_{FA}: %.3f, P_{FA(actual)}:%.3f',TRAINING_CELL*2,GUARD_CELL*2,PFA,length(INDEX)/N)})
+    title(tt, {METHOD+'-CFAR Detection';sprintf('Training Cell: %d, Guard Cell: %d, P_{FA}: %.3f',TRAINING_CELL*2,GUARD_CELL*2,PFA)})
 end
 
 end

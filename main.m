@@ -2,7 +2,7 @@
 % Filename: main.m
 % Description: Eliminate the effects of RF interference to preserve the original signal
 % Build Date: 2025/01/15
-% Last edited: 2025/08/01
+% Last edited: 2025/08/20
 % Author: CHE-WEN, KUO
 % Version: 1.0.0
 
@@ -36,6 +36,6 @@ data_rawabs = abs(data4);
 data_power = data_rawabs.^2;
 
 % Find RFI index
-[CFAR_RFI_index, threshold] = CFAR(data_power, 4, 2, 0.16, "CA", "false");
+[CFAR_RFI_index, threshold] = CFAR(data_power, 2, 1, 0.10, "CA", "false");
 
 [DATA_EVD, DATA_EVD_3D] = EVD(data3, CFAR_RFI_index);
