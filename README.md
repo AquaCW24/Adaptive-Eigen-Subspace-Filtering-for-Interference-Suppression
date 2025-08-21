@@ -11,7 +11,7 @@ The flowchart shows the process for removing radio frequency interference. First
 ## Ionogram
 Many carrier frequencies were observed to be shielded by radio frequency interference in the original ionosphere map.
 
-![Ionogram](./images/original.png "Original Ionogram")
+![Ionogram](./images/Original.png "Original Ionogram")
 
 ## CFAR Detector
 Use a CFAR detector to detect the presence of radio frequency interference. The flowchart is the algorithm of CA-CFAR.
@@ -33,7 +33,7 @@ The noise level is estimated by averaging the outputs of the reference cells sur
 The greatest of the two reference window is taken as the noise power estimate.
 
 ```math
-P=\left\{\begin{matrix}P_L, & P_L>P_R\\ P_R, & P_R>P_L\end{matrix}\right.
+P=\left \{ \begin{matrix}P_L, & P_L > P_R \\ P_R, & P_R > P_L \end{matrix} \right.
 ```
 
 ![GOCA-CFAR](./images/GOCA-CFAR.png "GOCA-CFAR")
@@ -42,7 +42,7 @@ P=\left\{\begin{matrix}P_L, & P_L>P_R\\ P_R, & P_R>P_L\end{matrix}\right.
 The smallest of the sums in the leading and lagging windows is used to estimate the noise power.
 
 ```math
-P=\left\{\begin{matrix}P_L, & P_L<P_R\\ P_R, & P_R<P_L\end{matrix}\right.
+P=\left \{ \begin{matrix}P_L, & P_L < P_R \\ P_R, & P_R < P_L \end{matrix} \right.
 ```
 
 ![SOCA-CFAR](./images/SOCA-CFAR.png "SOCA-CFAR")
