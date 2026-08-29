@@ -20,7 +20,7 @@ Use a CFAR detector to detect the presence of radio frequency interference. The 
 \displaystyle T = \alpha P \\ \alpha=N(P_{FA}^{-\frac{1}{N}}-1) \\ P=\frac{1}{N}\sum^{N}_{n=1}x_{n}
 ```
 
-![CAFR Flowchart](./images/CFAR_flowchart.jpg "CFAR Flowchart")
+![CAFR Flowchart](./images/CFAR_flowchart.png "CFAR Flowchart")
 
 ### The Variant of CFAR
 
