@@ -2,7 +2,7 @@
 % Filename: main.m
 % Description: Eliminate the effects of RF interference to preserve the original signal
 % Build Date: 2025/01/15
-% Last edited: 2025/08/20
+% Last edited: 2026/08/29
 % Author: CHE-WEN, KUO
 % Version: 1.0.0
 
@@ -32,10 +32,10 @@ for nc = 1:Nchannel/2
     data3(1,:,:) = [];
     data4 = squeeze(sum(data3,2));
 end
-data_rawabs = abs(data4);
-data_power = data_rawabs.^2;
 
-% Find RFI index
-[CFAR_RFI_index, threshold] = CFAR(data_power, 2, 1, 0.10, "CA", "false");
-
-[DATA_EVD, DATA_EVD_3D] = EVD(data3, CFAR_RFI_index);
+RFIDM = RFIDM();
+[CFAR_RFI_index, ~] = RFIDM.detect(data3); 
+data_EVD = RFIDM.process(data3, 'evd'); % EVD
+data_RFIM = RFIDM.process(data3, 'rfim'); % RFIM
+RFIDM.ReferenceGateNumber = 16;
+data_FACS = RFIDM.process(data3, 'facs'); % FACS
